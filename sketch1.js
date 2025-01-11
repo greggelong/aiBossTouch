@@ -50,6 +50,10 @@ function touchStarted() {
   // Generate a random touch level between 0 and 9
   touchLevel = floor(random(0, 10));
   drawit();
+  // Ensure it works on iPhone
+  if (getAudioContext().state !== "running") {
+    getAudioContext().resume();
+  }
 
   // Start speaking if not already speaking
   if (!isSpeaking) {
