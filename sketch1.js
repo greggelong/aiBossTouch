@@ -1,5 +1,7 @@
 let bard, cbard; // p5.Speech objects for English and Chinese
 let touchLevel = 0; // Current touch level
+let isSpeaking = false; // To track if speech is ongoing
+let bh; // Background image
 
 // English and Chinese descriptions for touch levels
 const touchDescriptionsEnglish = [
@@ -27,11 +29,11 @@ const touchDescriptionsChinese = [
   "触感级别 8: 强烈的姿态，坚决而清晰。",
   "触感级别 9: 强烈的存在，但依然温柔。",
 ];
-let bh; // Background image
 
 function preload() {
   bh = loadImage("bosshand.jpeg"); // Load image for the background
 }
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textSize(32);
@@ -47,12 +49,24 @@ function setup() {
 function touchStarted() {
   // Generate a random touch level between 0 and 9
   touchLevel = floor(random(0, 10));
-
-  // Speak the touch level descriptions
-  speakTouchLevel(touchLevel);
   drawit();
 
+  // Start speaking if not already speaking
+  if (!isSpeaking) {
+    isSpeaking = true;
+    speakTouchLevel(touchLevel);
+  }
+
   return false; // Prevent default behavior
+}
+
+function touchEnded() {
+  // Stop speech when the touch ends
+  if (isSpeaking) {
+    cbard.stop(); // Stop Chinese speech
+    bard.stop(); // Stop English speech
+    isSpeaking = false; // Reset the speaking flag
+  }
 }
 
 function speakTouchLevel(level) {
