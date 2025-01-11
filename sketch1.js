@@ -44,8 +44,22 @@ function setup() {
   bard = new p5.Speech(); // English speech
   cbard = new p5.Speech(); // Chinese speech
   cbard.setLang("zh-CN"); // Set Chinese language
-  getAudioContext().resume();
-  cbard.speak("你好");
+  unlockAudioContext();
+}
+
+function unlockAudioContext() {
+  // Check if audio context is locked and unlock it
+  if (getAudioContext().state !== "running") {
+    getAudioContext()
+      .resume()
+      .then(() => {
+        // Audio context is now unlocked, speak a message
+        console.log("Audio context unlocked!");
+        cbard.speak("你好");
+      });
+  }
+  print("unlock");
+  cbard.speak("好");
 }
 
 function touchStarted() {
