@@ -61,7 +61,10 @@ function speakTouchLevel(level) {
   const englishText = touchDescriptionsEnglish[level];
 
   // Speak Chinese first, then English
+  cbard.setLang("zh-CN");
   cbard.speak(chineseText);
+
+  bard.setLang("en-US");
   bard.speak(englishText);
 }
 
