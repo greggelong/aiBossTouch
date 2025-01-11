@@ -2,6 +2,7 @@ let bard, cbard; // p5.Speech objects for English and Chinese
 let touchLevel = 0; // Current touch level
 let isSpeaking = false; // To track if speech is ongoing
 let bh; // Background image
+let checkbox;
 
 // English and Chinese descriptions for touch levels
 const touchDescriptionsEnglish = [
@@ -39,7 +40,25 @@ function setup() {
   textSize(32);
   textAlign(CENTER, CENTER);
   drawit();
+  checkbox = createCheckbox("sound", false);
+  checkbox.position(width / 6, height / 2);
+  checkbox.changed(unlockAudioContext);
+  checkbox.style("font-size", "30px");
+  checkbox.style("color", "#333");
+  checkbox.style("cursor", "pointer");
+  checkbox.style("padding", "10px");
+  checkbox.style("border", "2px solid #ccc");
+  checkbox.style("border-radius", "8px");
+  checkbox.style("background-color", "#f9f9f9");
+  checkbox.style("transition", "background-color 0.3s ease");
 
+  // Add hover effect using JavaScript events
+  checkbox.mouseOver(() => {
+    checkbox.style("background-color", "#e0f7fa");
+  });
+  checkbox.mouseOut(() => {
+    checkbox.style("background-color", "#f9f9f9");
+  });
   // Initialize p5.Speech objects
   bard = new p5.Speech(); // English speech
   cbard = new p5.Speech(); // Chinese speech
