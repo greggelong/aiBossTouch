@@ -44,7 +44,7 @@ function setup() {
   bard = new p5.Speech(); // English speech
   cbard = new p5.Speech(); // Chinese speech
   cbard.setLang("zh-CN"); // Set Chinese language
-  unlockAudioContext();
+  cbard.onLoad = unlockAudioContext();
 }
 
 function unlockAudioContext() {
