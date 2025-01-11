@@ -1,0 +1,110 @@
+let lastTapTime = 0; // Stores the timestamp of the last tap
+let touchLevel = 0; // Current touch level
+let bard, cbard; // p5.Speech objects for English and Chinese
+let touchInProgress = false; // Flag to check if touch is in progress
+
+// English and Chinese descriptions for touch levels
+const touchDescriptionsEnglish = [
+  "Touch level 0: No feeling, just air drifting by.",
+  "Touch level 1: A faint whisper of existence.",
+  "Touch level 2: The slightest press, as if from a ghost.",
+  "Touch level 3: Gentle weight, like a feather landing.",
+  "Touch level 4: A soft nudge, a light handshake.",
+  "Touch level 5: A firm touch, steady and deliberate.",
+  "Touch level 6: A pressing grip, certain but kind.",
+  "Touch level 7: Solid contact, a call to awareness.",
+  "Touch level 8: A strong gesture, resolute and clear.",
+  "Touch level 9: Intense presence, yet still gentle.",
+];
+
+const touchDescriptionsChinese = [
+  "触感级别 0: 没有感觉，只是空气漂过。",
+  "触感级别 1: 微弱的存在耳语。",
+  "触感级别 2: 最轻的压力，就像幽灵触碰。",
+  "触感级别 3: 温柔的重量，如羽毛落下。",
+  "触感级别 4: 轻柔的推搡，像轻握手。",
+  "触感级别 5: 稳重的触摸，坚定而从容。",
+  "触感级别 6: 紧握的压力，确定却温和。",
+  "触感级别 7: 稳固的接触，一种唤醒。",
+  "触感级别 8: 强烈的姿态，坚决而清晰。",
+  "触感级别 9: 强烈的存在，但依然温柔。",
+];
+
+let bh; // Background image
+
+function preload() {
+  bh = loadImage("bosshand.jpeg"); // Load image for the background
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+
+  // Initialize p5.Speech objects
+  bard = new p5.Speech(); // English speech
+  cbard = new p5.Speech(); // Chinese speech
+  cbard.setLang("zh-CN"); // Set Chinese language
+}
+
+function draw() {
+  background(bh); // Display background image
+
+  // Display the touch level
+  fill(0);
+  text("Touch Level: " + touchLevel, width / 2, height / 2);
+
+  // Provide visual feedback for the touch level
+  noStroke();
+  fill(100, 100, 255, touchLevel * 25);
+  ellipse(width / 2, height / 2, touchLevel * 50);
+}
+
+function touchStarted() {
+  // Prevent multiple touch actions if one is already in progress
+  if (touchInProgress) {
+    return false; // Ignore touch if one is already in progress
+  }
+
+  // Ensure it works on iPhone
+  if (getAudioContext().state !== "running") {
+    getAudioContext().resume();
+  }
+
+  let currentTime = millis(); // Get the current time
+  let timeDifference = currentTime - lastTapTime; // Calculate time since last tap
+
+  // Map time difference to a touch level (faster taps = higher levels)
+  if (lastTapTime > 0) {
+    touchLevel = constrain(floor(map(timeDifference, 100, 2000, 9, 1)), 1, 9);
+  }
+
+  // Speak the touch level descriptions, Chinese first then English
+  speakTouchLevel(touchLevel);
+
+  // Mark that touch has started
+  touchInProgress = true;
+
+  // Update the last tap time
+  lastTapTime = currentTime;
+
+  return false; // Prevent default behavior
+}
+
+function touchEnded() {
+  // Allow touch to end, resetting the flag
+  touchInProgress = false;
+}
+
+function speakTouchLevel(level) {
+  // Get descriptions in both languages
+  const chineseText = touchDescriptionsChinese[level];
+  const englishText = touchDescriptionsEnglish[level];
+
+  // Speak Chinese first, then English
+  cbard.setLang("zh-CN");
+  cbard.speak(chineseText);
+
+  bard.setLang("en-US");
+  bard.speak(englishText);
+}
