@@ -89,7 +89,11 @@ function speakTouchLevel(level) {
 }
 
 function drawit() {
-  background(bh); // Refresh the background every frame
+  background(bh);
+  fill(255, 0, 0, 30);
+  noStroke();
+  let sz = map(touchLevel, 0, 9, 20, 500);
+  ellipse(mouseX, mouseY, sz, sz);
 
   // Optionally, display the touch level on screen
   fill(0);
